@@ -19,6 +19,7 @@ else{
 	echo "nell";
 }
 */
+/*
 include('database.php');
 					  $saldo = (int) "123";
 					 $usuario = "David";
@@ -36,7 +37,29 @@ include('database.php');
 					echo "mal";
 					
 				}		
-					mysqli_close($conn);
+					mysqli_close($conn);*/
+
+include('database.php');
+						//$estacionamiento = $_POST['estacionamiento'];
+
+					$conn = mysqli_connect($hostname, $host_user, $host_password, $database);
+
+					$obTiempo= mysqli_fetch_array (mysqli_query($conn, "SELECT horaEntrada, horaSalida FROM usuarioEstacionamiento WHERE  id_usuario = 41"));
+
+				$horaEntrada =	$obTiempo['horaEntrada'] ;
+				$horaSalida =	$obTiempo['horaSalida'];
+
+				$array = explode(":", $horaEntrada);
+
+				$horaEntero = (int) $array['0'];
+
+				$suma = $horaEntero + 1;
+
+				echo $suma;
+
+
+
+
 
 
  ?>
