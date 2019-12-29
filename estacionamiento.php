@@ -144,6 +144,7 @@
 								
 								$respuesta['mensaje']= "Saliste vuelta pronto";
 								$respuesta['error']= false;
+								$deleteMonitoreo = mysqli_query($conn, "DELETE FROM usuarioEstacionamiento WHERE id_usuario= '$id'");
 							}else{
 								
 
