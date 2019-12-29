@@ -78,7 +78,7 @@
 					$res = mysqli_query($conn, "UPDATE cuenta SET saldo='$updateSaldo' WHERE usuario = '$usuario' ");
 
 					if (isset($res)) {
-						$respuesta['mensaje']= "Cobro iniciado";
+						$respuesta['mensaje']= "Se cobra la 1era hora";
 
 						$obHoras =mysqli_fetch_array (mysqli_query($conn, "SELECT horaEntrada, horaSalida FROM usuarioEstacionamiento  WHERE id_usuario= '$id'"));
 
@@ -138,19 +138,21 @@
 							$arraySystem = explode(":", $horaSalida); //hora de salida del carro final 
 							//Obtengo la hora del string
 
-
-
-							$horaSalidaBD =  $array['0'];
-							$horaSalidareal = $arraySystem['0'];
-
+							//Si la hora que salio el carro es menor o igual a la hora
 
 							if ($arraySystem <= $array) {
 								
-								$respuesta['mensaje']= $tiempoSalidaBD;
+								$respuesta['mensaje']= "Saliste vuelta pronto";
 								$respuesta['error']= false;
 							}else{
-									$respuesta['mensaje']= "No sale";
-								$respuesta['error']= true;
+									$respuesta['mensaje']= "Se te cobrara un costo extra";
+									$respuesta['error']= true;
+
+
+
+
+
+
 							}
 
 
