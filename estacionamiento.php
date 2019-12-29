@@ -181,6 +181,9 @@
 
 									$respuesta['mensaje']= "Saldo actualizado";
 										$actSaldo = mysqli_query($conn, "UPDATE cuenta SET saldo='$nuevoSaldo' WHERE id_usuario = '$id' ");
+										$deleteMonitoreo = mysqli_query($conn, "DELETE FROM usuarioEstacionamiento WHERE id_usuario= '$id'");
+										$respuesta['status'] = "Tu nuevo Saldo es de: ". $nuevoSaldo;
+										$respuesta['tiempo'] = "Tu tiempo de demora fue de: ". $resultado;
 												$respuesta['error']= true;
 									}
 
