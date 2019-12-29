@@ -49,13 +49,28 @@ include('database.php');
 				$horaEntrada =	$obTiempo['horaEntrada'] ;
 				$horaSalida =	$obTiempo['horaSalida'];
 
-				$array = explode(":", $horaEntrada);
+				$arrayEntrada = explode(":", $horaEntrada);
 
-				$horaEntero = (int) $array['0'];
+				$arraySalida = explode(":", $horaSalida);
 
-				$suma = $horaEntero + 1;
+				 $horaEntero =  $arrayEntrada['0'].$arrayEntrada['1'];
 
-				echo $suma;
+				 $horaSalida = $arraySalida['0'].$arraySalida['1'];
+
+				/*$suma = $horaEntero + 1;
+
+				echo $suma;*/ 
+
+				$resta = $horaSalida- $horaEntero; 
+				
+echo $resta."<br>";
+
+$arrayResta =  str_split($resta);
+
+$resultado = $arrayResta['0'];
+
+echo $resultado;
+
 
 
 
