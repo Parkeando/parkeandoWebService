@@ -75,10 +75,10 @@
 					$insercionHistorial = mysqli_query($conn, "INSERT INTO historial (lugar, id_usuario, id_estacionamiento) VALUES ('$nombreEstaci', '$id', '$idEsta') ");
 
 					
-					$res = mysqli_query($conn, "UPDATE cuenta SET saldo='$updateSaldo' WHERE usuario = '$usuario' ");
+					//$res = mysqli_query($conn, "UPDATE cuenta SET saldo='$updateSaldo' WHERE usuario = '$usuario' ");
 
-					if (isset($res)) {
-						$respuesta['mensaje']= "Se cobra la 1era hora";
+					if (isset($insercionHistorial)) {
+						$respuesta['mensaje']= "Ingreso exitoso";
 
 						$obHoras =mysqli_fetch_array (mysqli_query($conn, "SELECT horaEntrada, horaSalida FROM usuarioEstacionamiento  WHERE id_usuario= '$id'"));
 
@@ -135,16 +135,23 @@
 
 							//Separo el string
 							$array = explode(":", $tiempoSalidaBD); //tiempo de salida estimado en al bd
-							$arraySystem = explode(":", $horaSalida); //hora de salida del carro final 
+							$arraySystem = explode(":", $horaSalida); //hora de salida del carro final osea la del momento
 							//Obtengo la hora del string
 
 							//Si la hora que salio el carro es menor o igual a la hora
 
-							if ($arraySystem <= $array) {
+							//entradahora de entrada/////
+
+							$arrayBDEntrada = explode(":", $tiempoEntradaBD);
+
+
+
+							if ($arraySystem <= $array ) {
 								
 								$respuesta['mensaje']= "Saliste vuelta pronto";
 								$respuesta['error']= false;
 								$deleteMonitoreo = mysqli_query($conn, "DELETE FROM usuarioEstacionamiento WHERE id_usuario= '$id'");
+
 							}else{
 								
 
@@ -195,11 +202,49 @@
 										}*/
 										
 
+							}
+
+							if ($arraySystem > $arrayBDEntrada) {
 								
+									$arrayTiempoEntradaBD = explode(":", $tiempoEntradaBD);
+
+									$horaEntradaFinal = $arrayTiempoEntradaBD['0'].$arrayTiempoEntradaBD['1'];
+
+									$horaSalidaFinal = $arraySystem['0'].$arraySystem['1'];
+
+									//Calculo la cantidad de horas extras
+									$resta = $horaSalidaFinal - $horaEntradaFinal;
+
+									$arrayResta =  str_split($resta);
+									//En resultado ya definitivamente almaceno el la cantidfad  de horas que se tardo el usuario
+									$resultado = $arrayResta['0'];
+
+									$cuota= mysqli_fetch_array (mysqli_query($conn, "SELECT cuota FROM estacionamiento WHERE  qrSalida = '$estacionamiento'"));
+
+									$pago = $cuota['cuota'] * $resultado;
+//////////////////////
+
+									$saldo= mysqli_fetch_array (mysqli_query($conn, "SELECT saldo FROM cuenta WHERE  id_usuario = '$id'"));
+								//operacion donde lo que tiene que pagar se le descontara a su saldo.
+
+									$nuevoSaldo = $saldo['saldo'] - $pago;
 
 
+									
+									//Si no hay saldo retornar el siguiente mensaje :(
+									if ($nuevoSaldo <= 0) {
+												$respuesta['mensaje']= "Saldo insuficiente";
+												$respuesta['error']= true;
+									}else{
 
 
+									$respuesta['mensaje']= "Saldo actualizado";
+										$actSaldo = mysqli_query($conn, "UPDATE cuenta SET saldo='$nuevoSaldo' WHERE id_usuario = '$id' ");
+										$deleteMonitoreo = mysqli_query($conn, "DELETE FROM usuarioEstacionamiento WHERE id_usuario= '$id'");
+										$respuesta['status'] = "Tu nuevo Saldo es de: ". $nuevoSaldo;
+										$respuesta['tiempo'] = "Tu tiempo de demora fue de: ". $resultado;
+												$respuesta['error']= true;
+									}
 							}
 
 
